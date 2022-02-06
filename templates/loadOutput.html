@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Anonymous+Pro" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css">
+<title>Loading Outputs</title>
+
+<script>
+    /* If we have form parameters (like login id), then we avoid resubmitting during refresh */
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+    <style>
+        .job.disabled{
+            pointer-events: none;
+            /* opacity: .65; */
+            color: #212529;
+        }
+        .btn.focus, .btn:focus {
+            box-shadow: none !important;
+        }
+        .text-xs {
+            font-size: .7rem;
+        }
+        code {
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title text-light">Job Cancel</h4>
+                <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-danger">
+                <h4 class="modal-title text-light">Error</h4>
+                <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand navbar-light bg-light flex-column flex-md-row bd-navbar">
+    <a class="navbar-brand" href="/"><img th:src="@{/img/logo.svg}"></a>
+    <div class="navbar-nav flex-row ml-md-auto d-md-flex">
+        <span th:text="${projectGreeting}" class="mx-2 nav-item" />
+    </div>
+    <form class="form-inline" th:action="${logoutUrl}" method="post">
+        <input type="hidden" th:name="${logoutParam}" value="1"/>
+        <button class="btn text-uppercase btn-outline-secondary">Logout</button>
+    </form>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-8 col-md-6 mb-4">
+            <h1>Preliminary results</h1>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="d-flex h-100 justify-content-end align-items-end">
+                <span id="postTime" class="badge badge-secondary"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-light text-uppercase mb-1">
+                                Verifier runtime (sec)</div>
+                            <div class="h5 mb-0 font-weight-bold text-white" id="total"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-stopwatch fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-light text-uppercase mb-1">
+                                Verified rules</div>
+                            <div class="h5 mb-0 font-weight-bold text-white" id="verified"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-light text-uppercase mb-1">
+                                Violated rules</div>
+                            <div class="h5 mb-0 font-weight-bold text-white" id="violated"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-times fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-light text-uppercase mb-1">
+                                Timeouts</div>
+                            <div class="h5 mb-0 font-weight-bold text-white" id="timeout"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Command -->
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header">
+                    <a href="#commandCollapse" class="text-info text-decoration-none" title="Show the executed command"
+                       data-toggle="collapse" role="button" aria-expanded="false"
+                       aria-controls="commandCollapse"><h5 class="mb-0">Command</h5></a>
+                </div>
+                <div id="commandCollapse" class="collapse">
+                    <div class="card-body">
+                        <pre class="mb-0"><code th:text="${job.buildArgs}"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Message -->
+    <div class="row" th:if="${job.notifyMsg}">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header">
+                    <h5 class="text-info mb-0">Message</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary mb-0" th:text="${job.notifyMsg}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- List all the rules -->
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="text-info mb-0">Properties</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table" id="rules-results">
+                        <thead>
+                            <tr>
+                                <th style="width: 60%!important;">Property</th>
+                                <th>Result</th>
+                                <th>Time (sec)</th>
+                                <th>Dump</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- editor -->
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <!-- Goto the editor and check the call trace -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="text-info mb-0">Explore the Spec</h5>
+                </div>
+                <div class="card-body" id="editorData">
+                    <p>Uploading the code into the editor...</p>
+                    <div class="progress">
+                        <div id="progress" class="progress-bar bg-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/additional.js}"></script>
+<script th:inline="javascript">
+    const job = [[${job}]];
+    const taskId = [[${taskId}]];
+    console.log(job);
+    console.log(taskId);
+
+    const postTime = job ? job["postTime"] : "";
+    const finishTime = job ? job["finishTime"] : "";
+    // const rules = jsonOutput ? jsonOutput["rules"] : {};
+    let rules = {};
+
+    if (postTime){
+        let d = new Date(postTime + "Z");
+        let localD = d.toString();
+        $('#postTime').text(localD);
+    }
+
+    if (postTime && finishTime){
+        const duration = getDuration(postTime, finishTime);
+        $('#total').text(duration);
+    }
+
+    let jsonOutputUrl = "/output/" + job.userId + "/" + job.jobId +
+                    "/output.json?anonymousKey=" + job.anonymousKey;
+    let dataUrl = "/output/" + job.userId + "/" + job.jobId +
+                    "/data.json?anonymousKey=" + job.anonymousKey;
+
+    $.ajax( jsonOutputUrl ).fail(function(d) {
+        console.log(d);
+        let error_msg = d.responseJSON.message;
+        console.log(error_msg);
+    }).done(function(d) {
+        console.log(d);
+        rules = d.rules;
+        count_rules(rules);
+    });
+
+    $.ajax( dataUrl ).fail(function(d) {
+        console.log(d);
+        let error_msg = d.responseJSON.message;
+        console.log(error_msg);
+    }).done(function(d) {
+        console.log(d);
+        $('h1').append(" - " + d.contractName);
+        draw_table(d);
+    });
+
+    let checkTask = "/taskStatus/" + job.userId + "/" + job.jobId +
+                    "?taskId=" + taskId + "&anonymousKey=" + job.anonymousKey;
+    let i = 0;
+
+    let ajaxIntervalId = setInterval(ajaxd, 5000);
+    let progressIntervalId = setInterval(progress, 250);
+
+    function ajaxd() {
+        $.ajax( checkTask ).fail(function(d) {
+            console.log(d);
+            let error_msg = d.responseJSON.message;
+            console.log(error_msg);
+        }).done(function(d) {
+            console.log(d);
+            if (d.success){
+                if (d.ip){
+                   clearInterval(ajaxIntervalId);
+                   clearInterval(progressIntervalId);
+                   $('#editorData p').hide();
+                   $('#editorData .progress').hide();
+                   $('#editorData').append("<a href='" + d.ip + "' class='btn btn-info' target='_blank'>Check the code</a>");
+                }
+            } else {
+                let error_msg = d.errorString;
+                console.log(error_msg);
+            }
+        });
+    }
+
+    function progress(){
+        if ( i / 2 >= 100 )
+            clearInterval(progressIntervalId);
+        $('#progress').css({"width": i/2 + "%", "aria-valuenow": i/2});
+	    if ( Number.isInteger(i / 2))
+	        $('#progress').text(i/2 + "%");
+        i += 1;
+    }
+
+    function draw_table(jsonData){
+        const results = jsonData["main_table"];
+        const contractResult = results["contractResult"];
+        const tbody = $('table tbody');
+        var q;
+        for (q=0; q<contractResult.length; q++){
+            ruleResult = contractResult[q]["tableRow"] ? contractResult[q]["tableRow"] : {};
+            if (ruleResult){
+                result = ruleResult ? ruleResult["result"] : "";
+
+                let row = "<tr class='";
+                let cell = "<td>";
+                let close_cell = "</td>";
+                let cell1 = cell + ruleResult["ruleName"] + close_cell;
+                let cell2 = cell;
+                let cell3 = cell + ruleResult["time"] + close_cell;
+                let cell4 = cell + '<a title="raw results" href="' + ruleResult["graph_link"] +
+                                    '" target="_blank"><i class="fas fa-project-diagram"></i></a>' + close_cell;
+
+                switch (result) {
+                    case "SUCCESS":
+                        cell2 += "👍";
+                        row += "table-success";
+                        break;
+                    case "FAIL":
+                        cell2 += "👎";
+                        row += "table-danger";
+                        break;
+                    case "TIMEOUT":
+                        cell2 += "⚠";
+                        row += "table-warning";
+                        break;
+                    default:
+                        cell2 += "❔";
+                        row += "table-danger";
+                        console.log("Unknown result: " + result);
+                }
+
+                row += "'>";
+
+                cell2 += close_cell;
+
+                row += cell1 + cell2 + cell3 + cell4 + "</tr>";
+                tbody.append(row);
+            } else {
+                console.log("Unexpected results");
+            }
+        }
+    }
+
+
+    function count_rules(rules){
+
+        if (rules){
+            let total = Object.keys(rules).length;
+            let verified = 0;
+            let violated = 0;
+            let timeout = 0;
+            // what about skipped ?
+
+            for (var rule of Object.keys(rules)) {
+                console.log(rule + " -> " + typeof rules[rule]);
+                if (typeof rules[rule] === "string") {// flat rule
+                    switch (rules[rule]) {
+                      case "SUCCESS":
+                        verified += 1;
+                        break;
+                      case "FAIL":
+                        violated += 1;
+                        break;
+                      case "TIMEOUT":
+                         timeout += 1;
+                        break;
+                      default:
+                        console.log("Unknown results for " + rule + ": " + rules[rule]);
+                    }
+                } else { // parametric rule or invariant
+                    if (rules[rule]["TIMEOUT"].length > 0){
+                        timeout += 1;
+                    } else if(rules[rule]["FAIL"].length > 0){
+                        violated += 1;
+                    } else if(rules[rule]["UNKNOWN"].length == 0){
+                        verified += 1;
+                    } else {
+                        console.log("Unknown results for " + rule + ": " + rules[rule]["UNKNOWN"]);
+                    }
+                }
+            }
+            /* present results */
+            $('#verified').text(verified + "/" + total);
+            $('#violated').text(violated + "/" + total);
+            $('#timeout').text(timeout + "/" + total);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype HTML>
+<html>
+  <head>
+    <title th:text="${title}" />
+    <meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="/json-viewer/jquery.json-viewer.js"></script>
+    <link href="/json-viewer/jquery.json-viewer.css" type="text/css" rel="stylesheet" />
+    <script th:inline="javascript">
+        function renderJson() {
+          try {
+            var job = [(${error})];
+          }
+          catch (error) {
+            return alert("Cannot eval JSON: " + error);
+          }
+          var options = {
+            collapsed: true,
+            rootCollapsable: false,
+            withQuotes: false,
+            withLinks: true
+          };
+          $('#json-renderer').jsonViewer(job, options);
+        }
+    </script>
+  </head>
+<body onload="renderJson()">
+  <img th:src="@{/img/logo.svg}">
+  <h1 th:text="${title}"/>
+  <pre id="json-renderer"></pre>
+</body>
+</html>

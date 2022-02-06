@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Anonymous+Pro" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css">
+<title>Home page</title>
+
+<script>
+    /* If we have form parameters (like login id), then we avoid resubmitting during refresh */
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+    <style>
+        .job.disabled{
+            pointer-events: none;
+            /* opacity: .65; */
+            color: #212529;
+        }
+        table th{
+            border-right: 1px solid #dee2e6;
+        }
+        table th:last-child{
+            border-right: 0;
+        }
+        .btn.focus, .btn:focus {
+            box-shadow: none !important;
+        }
+    </style>
+
+
+</head>
+<body>
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title text-light">Job Cancel</h4>
+                <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-danger">
+                <h4 class="modal-title text-light">Error</h4>
+                <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand navbar-light bg-light flex-column flex-md-row bd-navbar">
+    <a class="navbar-brand" href="/"><img th:src="@{/img/logo.svg}"></a>
+    <div class="navbar-nav flex-row ml-md-auto d-md-flex">
+        <span th:text="${projectGreeting}" class="mx-2 nav-item" />
+    </div>
+    <form class="form-inline" th:action="${logoutUrl}" method="post">
+        <input type="hidden" th:name="${logoutParam}" value="1"/>
+        <button class="btn text-uppercase btn-outline-secondary">Logout</button>
+    </form>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>List of jobs</h1>
+            <p id="period">Period: since <span></span></p>
+            <div class="card shadow mb-3">
+                <div class="card-body">
+                    <div id="toolbar">
+                        <button id="refreshButton" class="btn btn-secondary">Refresh</button>
+                    </div>
+                    <table class="table"
+                           data-toggle="table"
+                           data-sort-name="started"
+                           data-sort-order="desc"
+                           data-pagination="true"
+                           data-page-size="10"
+                           data-page-list="[5, 10, 25, 50]"
+                           data-search="true"
+                           data-toolbar="#toolbar"
+                           data-classes="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col" data-field="id">JobID</th>
+                                <th scope="col" data-field="jobStatus" data-sortable="true">Job Status</th>
+                                <th scope="col" data-field="started" data-sortable="true" data-formatter="startFormatter">Started</th>
+                                <th scope="col" data-field="dur" data-sortable="true" data-formatter="durationFormatter">Duration</th>
+                                <th scope="col" data-field="operate" data-formatter="actionsFormatter" data-events="operateEvents">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="job: ${jobList}">
+                                <td>
+                                    <a target="_blank" class="job" th:id="${job.jobId}" th:text="${job.jobId}" th:href="${job.outputUrl} + '?anonymousKey=' + ${job.anonymousKey}">jobId</a>
+                                    <p th:if="${job.notifyMsg}" th:text="${job.notifyMsg}"></p>
+                                </td>
+                                <td th:text="${job.jobStatus}">jobStatus</td>
+                                <td th:text="${job.postTime}">start time</td>
+                                <td th:text="${job.postTime}+ '_' + ${job.finishTime}">duration</td>
+                                <td>
+                                    <a class="insights btn"
+                                       th:href="(${#strings.endsWith(job.outputUrl,'html')}? ${#strings.replace(job.outputUrl,'FinalResults.html','')} : ${job.outputUrl}) + 'Results.txt?anonymousKey=' + ${job.anonymousKey}"
+                                       title="Insights" target="_blank">
+                                        <i class="fas fa-clipboard-list"></i>
+                                    </a>
+                                    <a class="ask btn" th:href="'mailto:ea@certora.com?subject=Question on job ' + ${job.jobId}" title="Ask Certora">
+                                        <i class="fas fa-question"></i>
+                                    </a>
+                                    <a class="btn" th:href="${#strings.substringBefore(#strings.replace(job.outputUrl,'/output/','/jobStatus/')}, 'FinalResults.html')} + '?anonymousKey=' + ${job.anonymousKey}" title="Status Page">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center w-100 mt-2">
+                        <a href="/" class="btn btn-link text-decoration-none" id="prev" title="See previous results">Load more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
+<script th:inline="javascript">
+    var missing = [[${missingOutput}]];
+    console.log(missing);
+    missing.forEach(function (item, index) {
+        console.log(item, index);
+        $('#'+item).addClass('disabled').attr('tabindex', -1);
+    });
+</script>
+<script th:src="@{/js/additional.js}"></script>
+</body>
+</html>

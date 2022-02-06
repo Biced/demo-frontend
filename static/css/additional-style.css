@@ -1,0 +1,116 @@
+body {
+		font-family: "Chakra Petch", sans-serif;
+	}
+.bg-gradient-primary {
+    background-color: #2E93CC;
+    background-image: linear-gradient(180deg, #2E93CC 10%, #0b76b2 100%);
+}
+.bg-primary {
+    background-color: #2E93CC;
+}
+.text-primary {
+    color: #2E93CC !important;
+}
+.btn-primary{
+    background-color: #2E93CC;
+    border-color: #2E93CC;
+}
+
+.btn-primary:active,
+.btn-primary:focus {
+    background-color: #0b76b2;
+    border-color: #0275b6;
+}
+
+.btn-primary:hover,
+.btn-primary.disabled,
+.btn-primary:disabled{
+    background-color: #0680C4;
+    border-color: #026eab;
+}
+.sidebar .sidebar-brand{
+    font-size: 1.4rem;
+}
+#resultsContainer .table tr td:first-child {
+    word-break: break-all;
+}
+#logo_text{
+    font-size: 1.4rem !important;
+}
+.sidebar .sidebar-heading {
+    font-size: .85rem;
+}
+.spin_bg {
+    position: fixed;
+    background-color: rgba(255,255,255,0.5);
+    width: 100%;
+    height: 100%;
+}
+#spinWrapper div{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+}
+
+@media (min-width:768px) {
+    .sidebar .nav-item .nav-link span {
+        font-size: 1rem;
+        display: inline;
+    }
+    .sidebar .nav-item .nav-link i {
+        font-size: 1rem;
+        margin-right: .25rem;
+    }
+    #solidity_editor, #spec_editor {
+        height: 30rem;
+    }
+    .form-inline input{
+        max-width: 150px;
+    }
+    .toast{
+        min-width: 260px;
+    }
+}
+@media (max-width: 768px){
+    .form-inline .form-group{
+        width: 100%;
+    }
+    #solidity_editor, #spec_editor {
+        height: 10rem;
+    }
+    .toast{
+        min-width: 120px;
+    }
+}
+
+@media (min-width:992px){
+    .modal-dialog{max-width:800px;}
+}
+
+.sidebar .nav-item .collapse{
+    z-index: 5!important;
+}
+.navbar-nav .nav-links{
+     margin-top: auto;
+     margin-bottom: auto;
+     font-size: 1.2rem;
+}
+.navbar-nav .nav-link{
+     font-size: 1.2rem;
+}
+.custom-select{
+    height: calc(1.5em + .5rem + 2px);
+    padding: .25rem 1.5rem .25rem 0.8rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+.invalid{
+    border: 1px solid red;
+}
+footer.sticky-footer{
+    padding: 1rem 0!important;
+}
+.toast{
+    background-color: rgba(255,255,255,.95);
+}

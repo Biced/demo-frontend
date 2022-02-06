@@ -1,0 +1,20 @@
+body {
+    /* 100% of the viewport height */
+    height: 100vh;
+    /*
+        Photo by FLY:D on Unsplash
+        https://unsplash.com/@flyd2069?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+  
+    */
+    background-image: url('../img/bg-image-unsplash.jpg');
+    background-size: cover;
+}
+.container, .container .row {
+    height: calc(100% - 68px);
+}
+.card-header {
+    margin: -30px 30px 0px;
+}
+.card, .card-header h1 {
+    font-family: "Chakra Petch", sans-serif;
+}

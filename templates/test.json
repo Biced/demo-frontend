@@ -1,0 +1,58 @@
+{
+    "topics": [
+        {
+            "name": "spec",
+            "messages": [
+                {
+                    "message": "<script>console.log(\" zZZZZzzzZZZzzz \")</script>",
+                    "location": [85],
+                    "type":"error"
+                }
+            ]
+        },
+        {
+            "name": "spec",
+            "messages": [
+                {
+                    "message": "ERC20.spec syntax error: could not type expression \"balanceOf(user)\" Could not find an overloading of method balanceOf that matches the given arguments: address. Method is not envfree; did you forget to provide the environment as the first function argument?",
+                    "type":"error"
+                }
+            ]
+        },
+
+        {
+            "name": "solidity",
+            "messages": [
+                {
+                    "message": "ERC20Fixed.sol: function balanceOf(address account) Relevant source part starts here and spans across multiple lines",
+                    "location": [85, 20],
+                    "type":"error"
+                }
+                ,
+                {
+                    "message": "IERC20.sol: function balanceOf(address account) external view returns (uint256)",
+                    "location": [85, "<script>console.log(\" zZZZZzzzZZZzzz \")</script>"],
+                    "type":"error"
+                }
+            ]
+        }
+,
+        {
+            "name": "spec",
+            "messages": [
+
+            ]
+        },
+        {
+
+            "messages": [
+
+            ]
+        },
+        {
+
+        }
+    ]
+}
+
+

@@ -1,0 +1,47 @@
+<!doctype HTML>
+<html>
+<head>
+    <title>Login to Certora</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Chakra+Petch:300,400,700" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        /* If we have form parameters (like logout=1), then we avoid resubmission during refresh */
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+    </script>
+    <link rel="stylesheet" th:href="@{/css/additional.css}">
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="/"><img th:src="@{/img/logo.svg}"></a>
+</nav>
+<div class="container">
+    <div class="row h-100">
+        <div class="card w-50 m-auto shadow">
+            <div class="card-header bg-info text-white text-center">
+                <h1 class="text-uppercase mb-0">Login to Certora</h1>
+            </div>
+            <div class="card-body">
+                <div th:if="${failedLogin}" class="alert alert-danger alert-dismissible fade show">
+                    <strong>Error!</strong> Incorrect certora key, try again
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+                <form th:action="${#httpServletRequest.requestURI}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div><label>Certora key:</label></div>
+                        <input type="text" placeholder="40 hexanumeric characters" class="form-control" name="certoraKey" th:required="required"/>
+                    </div>
+                    <button class="btn btn-info" type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

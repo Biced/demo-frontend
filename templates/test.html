@@ -1,0 +1,35 @@
+let MainTemplate  = `<div class="col">
+    <a class="" data-toggle="collapse" href="#collapseError${index+1}" role="button" aria-expanded="false" aria-controls="collapseError${index+1}">
+     <div class="row">
+      <i class="fas fa-chevron-down"></i>
+      <p>
+      ${element.name}
+      </p>
+      <span>2</span>
+      </div>
+    </a>
+  <div class="collapse col " id="collapseError${index+1}">
+
+    <div class="card-error row">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>${element.messages[0].message}</p>
+      <a href="#"> [${element.messages[0].location[0]}:${element.messages[0].location[1]}]</a>
+
+    </div>
+    <div class="card-error row">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>
+        ${element.messages[0].message}
+      </p>
+      <a href="#"> [${element.messages[0].location[0]}:${element.messages[0].location[1]}]</a>
+    </div>
+    <div class="card-error row">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>
+      ${element.messages[0].message}
+      </p>
+      <a href="#"> [${element.messages[0].location[0]}:${element.messages[0].location[1]}]</a>
+    </div>
+
+  </div>
+</div>`
