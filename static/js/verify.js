@@ -591,7 +591,7 @@ $('#save_btn').click(function(e) {
 
 
 // testing editor things
-document.addEventListener('dblclick', ()=> solEditor.moveCursorToPosition({'row':"93","column":"0"}))
+// document.addEventListener('dblclick', ()=> solEditor.moveCursorToPosition({'row':"93","column":"0"}))
 // let testing = document.querySelector(".ace_content")
 // document.addEventListener('click', ()=> testing.mouseDown())
 

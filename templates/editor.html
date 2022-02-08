@@ -243,9 +243,9 @@
 </a>
 
 
-<a href="" id="results_btn" class="btn btn-success btn-sm btn-icon-split hideResults">
-                  <span class="icon text-white-50">
-                      <i class="fas fa-play"></i>
+<a id="results_btn" class="btn btn-sm btn-icon-split hideResults disabled">
+                  <span>
+                      <i class="fas fa-play text-white"></i>
                   </span>
 <span>View Results</span>
 </a>
@@ -407,6 +407,12 @@
 
       toggle_buttons.addEventListener("click", ()=>{
         play_stop_btn.classList.toggle("btn-ver-animated")
+        resultsCounter.classList.toggle("disabled")
+        if(resultsCounter.style.opacity == 0){
+          resultsCounter.style.opacity = 1
+          return
+        }
+        resultsCounter.style.opacity = 0
       })
       btnFakeReset.addEventListener("click",()=>{
         mainErrorBadge.hidden = true
@@ -419,9 +425,9 @@
       
   btnFakeDone.addEventListener("click", ()=>{
     // resultsCounter.href = "#test"
-    resultsCounter.classList.remove("hideResults")
-    btnCounter.classList.add("hideResults")
-    btnCounterTxt.classList.add("hideResults")
+    // resultsCounter.classList.remove("hideResults")
+    // btnCounter.classList.add("hideResults")
+    // btnCounterTxt.classList.add("hideResults")
   })
 
  
@@ -456,6 +462,7 @@
     if(dots_interval){
       dontsIntervals = false
     clearInterval(dots_interval)
+    dots_interval = false
     btnDots.textContent = ''
     }
     if(bg_reset){
