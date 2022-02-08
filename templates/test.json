@@ -1,15 +1,16 @@
 {
     "topics": [
+    
         {
             "name": "spec",
             "messages": [
                 {
-                    "message": "<script>console.log(\" zZZZZzzzZZZzzz \")</script>",
-                    "location": [85],
+                    "message": "",
+                    "location": ["                           img src onerror='alert(`Its a Trap!`)'                 "],
                     "type":"error"
                 }
             ]
-        },
+          },
         {
             "name": "spec",
             "messages": [

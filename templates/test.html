@@ -33,3 +33,47 @@ let MainTemplate  = `<div class="col">
 
   </div>
 </div>`
+
+<!-- json injectio -->
+
+<!-- {
+  "name": "spec",
+  "messages": [
+      {
+          "message": "<img src onerror='alert(`It's a Trap!`)'>",
+          "location": [85],
+          "type":"error"
+      }
+  ]
+}, -->
+
+<!-- fake api function -->
+<script>
+
+
+
+
+btnFake.addEventListener("click",()=>{
+  newErrorHandaling(res)
+  $.getJSON("fake-res-from-running.json", function(json) {
+      let fakeRes = JSON.parse(json.verificationProgress)
+      // get the total number of rules
+      console.log(json)
+      console.log(fakeRes.rules.length)
+      let updatedBtn = 0
+      // check how many rules are still running
+      fakeRes.rules.forEach(rule => {
+        if(rule.status !== "RUNNING")
+        updatedBtn++
+      });
+      btnStatusUpdate(updatedBtn, res.rules.length)
+
+      // results btn logic
+      if(updatedBtn === fakeRes.rules.length, res.rules.length ){
+        // unising a button for now ***btnFakeDone.addEventListener***
+      }
+  })
+
+})
+
+</script>

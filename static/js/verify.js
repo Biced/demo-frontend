@@ -269,14 +269,9 @@ function setupOnClick(linkCls){
 }
 setupOnClick(".examples");
 
-function hideLoading(){
-    $('#save_btn').removeClass("disabled");
-    $('#spinWrapper').removeClass("spin_bg").addClass("d-none");
-    $('#spinWrapper').css("z-index", "-5");
-}
+
 
 function showErrorWarn(msg, isWarn=false, title="Failed to send contract for verification"){
-    hideLoading();
     if (isWarn){
         verifyModalTitle.text("Server is currently overloaded");
     }else{
@@ -338,12 +333,12 @@ function prepareOutput( run ) {
      }).done(function (data){
         console.log("prepareOutput", data);
         if (data.finishTime != null){
-            hideLoading()
             getOutputLink(data);
         }else{
             setTimeout(prepareOutput, queryResultCycleMs, run);
         }
      }).fail(function (jqXHR, textStatus) {
+         
       console.log("There was an error", jqXHR, textStatus);
       showErrorWarn("Please, try again.");
      });
@@ -424,6 +419,7 @@ $('#font_size').change(function(){
 
 function presentOutputLink(outputUrl){
     console.log("presentOutputLink", outputUrl);
+    resultsCounter.href = outputUrl.replace("data.json", "")
     // $.get( outputUrl, function( jsonData ) {
     $.get( "https://arcane-mountain-01867.herokuapp.com/"+outputUrl, function( jsonData ) {
         console.log(jsonData);
@@ -453,6 +449,7 @@ function pingOutput(checkJobStatusUrl, outputUrl, anonymousKey, jobId, data) {
         cache: false
      }).done(function (data){
         console.log("pingOutput", data);
+        btnStatusUpdate();
         // present a new status on change
         if (jobId in jobStatusMap){
             if (jobStatusMap[jobId] != data.jobStatus){
@@ -465,18 +462,41 @@ function pingOutput(checkJobStatusUrl, outputUrl, anonymousKey, jobId, data) {
         if (data.jobStatus == "FAILED" || data.jobStatus == "SUCCEEDED" || data.jobStatus == "ERROR" ||
             data.jobStatus == "LAMBDA_ERROR" || data.jobStatus == "NOT_FOUND"){
             let dataJsonUrl = outputUrl + "data.json?anonymousKey=" + anonymousKey;
+
+            if(data.jobStatus == "FAILED"){
+                console.log("testing failed")
+            }
             presentOutputLink(dataJsonUrl);
             delete jobStatusMap[jobId];
         }else{
             if(data.jobStatus === "RUNNING"){
+                let updatedBtn = 0
+                
+        // check how many rules are still running
+        
+        if(is_data_from_progress){
+           
+            let running_res = JSON.parse(data.verificationProgress)
+            if(running_res.rules){
+                running_res.rules.forEach(rule => {
+                    if(rule.status !== "RUNNING")
+                    updatedBtn++
+                  });
+                  console.log(running_res)
+                  btnStatusUpdate(updatedBtn, running_res.rules.length)
+            }
+
+
+    }
                 let progressStatusUrl = checkJobStatusUrl.replace("/jobData/", "/progress/")
+                is_data_from_progress = true
                 setTimeout(pingOutput, queryResultCycleMs, progressStatusUrl, outputUrl, anonymousKey, jobId ,{"anonymousKey": anonymousKey});
                 return
             }
-            btnStatusUpdate()
             setTimeout(pingOutput, queryResultCycleMs, checkJobStatusUrl, outputUrl, anonymousKey, jobId);
         }
      }).fail(function (jqXHR, textStatus) {
+         
       console.log("There was an error", jqXHR, textStatus);
       showErrorWarn("Please, try again.");
      });
@@ -542,7 +562,6 @@ $('#save_btn').click(function(e) {
         console.log("save", data);
         if (data.errorMessages){
             newErrorHandaling()
-            hideLoading()
             // let errorsList = "<ul>";
             // for (var i=0; i< data.errorMessages.length; i++){
             //     if (data.errorMessages[i])
@@ -553,7 +572,6 @@ $('#save_btn').click(function(e) {
 
         } else if (data.outputUrl && data.anonymousKey){
             console.log("The compilation completed");
-            hideLoading();
             $('#compile-toast').toast('show');
             let checkJobStatusUrl = data.outputUrl.replace("/output/", "/jobData/");
             setTimeout(pingOutput, queryResultCycleMs, checkJobStatusUrl, data.outputUrl, data.anonymousKey, jobId);
@@ -572,4 +590,8 @@ $('#save_btn').click(function(e) {
 
 
 
+// testing editor things
+document.addEventListener('dblclick', ()=> solEditor.moveCursorToPosition({'row':"93","column":"0"}))
+// let testing = document.querySelector(".ace_content")
+// document.addEventListener('click', ()=> testing.mouseDown())
 

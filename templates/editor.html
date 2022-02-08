@@ -217,19 +217,29 @@
       </nav>
       <!-- Begin Page Content -->
       <div class="container-fluid">
-
+        <button id="toggle_buttons">Toggle buttons</button>
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
           <h1 class="h3 mb-0 text-gray-800">Online Editor</h1>
-          <!--<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                  class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
-               <div class="buttons row">
-                <a href="/save" id="save_btn" class="btn btn-primary btn-sm btn-icon-split">
+          <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                  class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
+                <div class="buttons row">
+               <!-- <a href="/save" id="save_btn" class="btn btn-primary btn-sm btn-icon-split">
                   <span class="icon text-white-50">
                       <i class="fas fa-play"></i>
                   </span>
 <span class="text" id="btnCounterTxt">Start Verification</span>
 <span id="btnCounter" class="text"></span>
+</a> -->
+                <a href="/save" id="save_btn" class="btn btn-primary btn-sm btn-icon-split btn-ver">
+                  <span>
+                      <i class="fas fa-play text-white"></i>
+                  </span>
+                  
+<span id="btnCounterTxt">Start Verification</span>
+<span class="d-flex font-weight-bold">
+  <span id="btnCounter"></span>
+  <span id="btnDots"></span>
 </a>
 
 
@@ -237,7 +247,7 @@
                   <span class="icon text-white-50">
                       <i class="fas fa-play"></i>
                   </span>
-<span class="text">View Results</span>
+<span>View Results</span>
 </a>
                </div>
         </div>
@@ -313,160 +323,11 @@
 
       <!-- /.container-fluid -->
 
-
-
-
-
-
-<style>
-  /* root colors and font sizes */
-  :root{
-    --error-main-black: #454545;
-    --error-message-black: #606060;
-    --grey-border: #D4D4D4;
-    --hover-grey: background: #E7E7E7;
-
-  }
-
-
-  /* rest some styles */
-  .card-error-heading, .erro-heading-row-items li{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .error-container{
-    line-height: 1.375rem;
-  }
-  .error-container a{
-    text-decoration: none;
-    color: inherit;
-  }
-  .error-container a:hover{
-    color: inherit;
-  }
-
-
-  /* badges */
- .main-error-badge, .card-error-heading span:last-child{
-    background-color: var(--error-main-black);
-    color: white;
-    border-radius: 50%;
-    display: inline-block;
-    text-align: center;
- }
-
- .main-error-badge{
-   height: 1.125rem;
-   width: 1.25rem;
-   margin: auto 0;
-   line-height: 1.125rem;
- }
-
-
- /* errors */
-  .erro-heading-row{
-    padding: 0.75rem 0.75rem 0.75rem 1.25rem;
-    font-size:0.75rem;
-    color: var(--error-main-black);
-
-  }
-  .erro-heading-row-items{
-    margin: 0;
-    padding: 0;
-    margin-left: auto;
-  }
-
-  .erro-heading{
-    font-weight: 600;
-    margin-right: 0.5rem;
-    border-bottom: 1px var(--error-main-black) solid;
-  }
-
-
-  .collapsed .animate-chev{
-  transform: rotatex(180deg);
-  }
-
-
-#collapseErrors{
-   color: var(--error-message-black);
-   font-size: 0.875rem;
- }
-/* error heading */
-.card-error-heading{
-padding-left: 1rem;
-}
-/* error items */
-
- .card-error{
-  padding-left: 1.5rem;
-  padding-right: 0.75rem;
-   margin: 0;
-
- }
- .card-error span{
-   max-width: calc(100% - 6.7em);
- }
- .card-error span:last-child{
-  margin-left: auto;
-}
- .card-error span:first-child{
-  border-left:1px var(--grey-border) solid;
-}
-
-/* , .card-error-heading span:first-child i */
- .card-error i, .card-error-heading span i{
-   text-align: center;
-   /* display: inline-block; */
-  font-size: 1em;
-  line-height: 100%;
-  min-height: 1rem;
-  min-width: 1rem;
- }
- .card-error-heading span:first-child{
-   margin-right: 0.125rem;
-
- }
- .card-error-heading span:last-child{
-  font-size: 0.625rem;
-  margin: auto;
-  margin-left: 0.375rem;
-  width: 1rem;
-  height: 1rem;
-  line-height: 1rem;
- }
- .card-error span:first-child, .card-error-heading span:nth-child(2){
-   margin-right: 0.375rem;
- }
- .card-error span:first-child{
-  padding-left:1rem;
- }
- /* buttons */
- .buttons{
-   overflow: hidden;
-   margin: 0;
- }
- /* #results_btn{ */
-  .hideResults{
-  /* transform:translateX(100%); */
-  width: 0;
-  border: 0;
-  padding: 0!important;
- }
- .buttons a span{
-   white-space: nowrap;
-  }
-
-  /* animations */
-  .animate-chev, .buttons a{
-    transition: all 0.3s ease-in-out;
-  }
-
-</style>
 <button id="fakeBtn">fake api</button>
 <button id="fakeDone">fake Done</button>
 <button id="fakeRest">fake reset</button>
+<button id="fakeToggle">fake Toggle</button>
+
 
 <div class="container-fluid">
   <div class="container-fluid card p-0 shadow" >
@@ -532,59 +393,82 @@ padding-left: 1rem;
 
 <script>
   let btnCounter = document.querySelector("#btnCounter"),
+  toggle_buttons = document.querySelector("#toggle_buttons"),
       btnCounterTxt = document.querySelector("#btnCounterTxt"),
+      btnDots = document.querySelector("#btnDots"),
       mainErrorBadge = document.querySelector('.main-error-badge'),
       CollapseErrors = document.querySelector('#collapseErrors'),
       resultsCounter = document.querySelector("#results_btn"),
       btnFakeReset = document.querySelector("#fakeRest"),
+      btnFakeToggle = document.querySelector("#fakeToggle"),
       btnFakeDone = document.querySelector("#fakeDone"),
       btnFake = document.querySelector("#fakeBtn")
+      let play_stop_btn = document.getElementById('save_btn')
 
+      toggle_buttons.addEventListener("click", ()=>{
+        play_stop_btn.classList.toggle("btn-ver-animated")
+      })
       btnFakeReset.addEventListener("click",()=>{
         mainErrorBadge.hidden = true
         CollapseErrors.textContent =  ""
       })
 
-      btnFake.addEventListener("click",()=>{
-    newErrorHandaling()
-    $.getJSON("fake-res-from-running.json", function(json) {
-        let fakeRes = JSON.parse(json.verificationProgress)
-        // get the total number of rules
-        console.log(json)
-        console.log(fakeRes.rules.length)
-        let updatedBtn = 0
-        // check how many rules are still running
-        fakeRes.rules.forEach(rule => {
-          if(rule.status !== "RUNNING")
-          updatedBtn++
-        });
-        btnCounter.hidden = false
-        btnCounter.textContent = `${updatedBtn}/${fakeRes.rules.length}`
-        btnCounterTxt.textContent = 'Preprocessing'
-
-        // results btn logic
-        if(updatedBtn === fakeRes.rules.length ){
-          // unising a button for now ***btnFakeDone.addEventListener***
-        }
-    })
-
-  })
-
-
+      btnFakeToggle.addEventListener("click", ()=>{
+        togglePlayStop('Starting')
+      })
+      
   btnFakeDone.addEventListener("click", ()=>{
-    resultsCounter.href = "#test"
+    // resultsCounter.href = "#test"
     resultsCounter.classList.remove("hideResults")
     btnCounter.classList.add("hideResults")
     btnCounterTxt.classList.add("hideResults")
   })
 
+ 
+  
   // new error handaling
-  let btnText = document.querySelector(".text")
-  function btnStatusUpdate(string){
-    btnText.textContent = "preprocessing"
-  }
+
+
+
+  // update btn when running
+  let is_data_from_progress = false
+  let btn_peprocessing = true
+  function btnStatusUpdate(finished, total){
+      if(finished && total){
+        btnCounter.hidden = false
+        btnCounter.textContent = `${finished}/${total}`+" "
+        togglePlayStop('Running')
+        return
+      }
+      if(btn_peprocessing){
+        btn_peprocessing = false
+        togglePlayStop("Starting")
+      } 
+      }
+
+      btnFake.addEventListener("click", ()=>{
+    newErrorHandaling()
+  })
+
+  //reset dots
+  function resetDots(text, bg_reset){
+    btnCounterTxt.textContent = text
+    if(dots_interval){
+      dontsIntervals = false
+    clearInterval(dots_interval)
+    btnDots.textContent = ''
+    }
+    if(bg_reset){
+      play_stop_btn.classList.remove('btn-no-bg')
+    }
+  } 
+
+  // this function runs on first submit
   function newErrorHandaling(){
+    // refactor with toggle
+    resetDots('Start Verification' , true)
     $.getJSON("test.json", function(json) {
+
       if (!json.topics.length) return
       let mainCounter = 0
       for (let index = 0; index < json.topics.length; index++) {
@@ -628,10 +512,47 @@ ${MsgTemplate}
 });
   }
 
+
+  // play/stop button api calls
+  
+  function togglePlayStop( btn_txt){
+    btnCounterTxt.innerText = btn_txt+" "
+    play_stop_btn.classList.add("btn-no-bg")
+    if(!dots_interval){
+      startDots(dots_arr, btnDots,  btn_txt)
+    }
+  }
+
+  // button text change
+  let dots_interval
+  function startDots(dots_arr, btnDots, btn_txt){
+    animateDots(dots_arr, btnDots )
+    dots_interval = setInterval(() => {
+    animateDots(dots_arr, btnDots )
+    }, 4000);
+  }
+  // dots animation
+  let dots_arr = ['','.','..','...']
+  let runDots = true
+  let dontsIntervals = false
+  let dots_timer = 1000
+  function animateDots(dots_arr , element){
+    dontsIntervals = true
+    element.textContent = ''
+for (let index = 0; index < dots_arr.length; index++) {
+  let dot = dots_arr[index]
+  setTimeout(() => {
+    if(dontsIntervals){
+      element.textContent = dot;
+    }
+  }, dots_timer*index);
+
+  }
+  
+}
+
 function createElementFromHTML(htmlString) {
   // refactor for vulnerabilities if any exist
-
-
 var div = document.createElement('div')
 div.innerHTML = htmlString.trim()
 CollapseErrors.appendChild(div.firstChild)
@@ -673,12 +594,8 @@ CollapseErrors.appendChild(div.firstChild)
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- loading -->
-  <div id="spinWrapper" class="d-none">
-    <div class="spinner-border" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
+
+
 
   <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;" data-delay="5000">
     <!-- Position it -->
