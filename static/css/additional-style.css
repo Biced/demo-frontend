@@ -251,20 +251,11 @@ padding-left: 1rem;
    }
    .btn-ver-animated #btnCounterTxt, .btn-ver-animated span:last-child{
     opacity: 0;
-    /* inline-size: min-content; */
     white-space:pre;
     overflow: hidden;
     margin: auto 0;
-    /* width: 0; */
-   
-
     }
-   .btn-ver-animated span:first-child{
-    /* opacity: 1; */
-    margin: 0;
-    /* min-width: 2rem; */
-  
-   }
+ 
  
 
 
