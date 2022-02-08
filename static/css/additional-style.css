@@ -244,7 +244,7 @@ padding-left: 1rem;
   /* animate buttons on results */
 
    .btn-ver-animated{ 
-       transform: translateX(calc(100% - 33px));
+       /* transform: translateX(calc(100% - 33px)); */
        width: 2rem;
        /* width: fit-content; */
        /* min-width: 0; */
